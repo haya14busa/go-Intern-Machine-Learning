@@ -10,14 +10,14 @@ var (
 	Negative = Label{value: -1}
 )
 
-func (l *Label) ToInt() int {
+func (l Label) ToInt() int {
 	return l.value
 }
 
-func (l *Label) IsPositive() bool {
+func (l Label) IsPositive() bool {
 	return l.value > 0
 }
 
-func (l *Label) IsNegative() bool {
+func (l Label) IsNegative() bool {
 	return l.value < 0
 }
