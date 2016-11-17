@@ -6,16 +6,42 @@ var _ Evaluator = &F1{}
 
 // F1 represents F1 score evaluator.
 type F1 struct {
-	// NOTE: you can add fields
+	tp int // the number of true positive
+	fp int // the number of false positive
+	fn int // the number of false negative
 }
 
 // Add aggregates true/false and positive/negative label.
 func (f *F1) Add(predicted, supervised ml.Label) {
-	// NOTE: aggregate true/false and positive/negative here.
+	switch predicted {
+	case ml.Positive:
+		switch supervised {
+		case ml.Positive:
+			f.tp++
+		case ml.Negative:
+			f.fp++
+		}
+	case ml.Negative:
+		switch supervised {
+		case ml.Positive:
+			f.fn++
+		case ml.Negative:
+			// true negative
+		}
+	}
 }
 
 // Accuracy caluculates F1 score.
 func (f *F1) Accuracy() float64 {
-	// NOTE: caluculate F1 score here.
-	return 0.0
+	p := f.Precision()
+	r := f.Recall()
+	return 2 * ((p * r) / (p + r))
+}
+
+func (f *F1) Precision() float64 {
+	return float64(f.tp) / float64(f.tp+f.fp)
+}
+
+func (f *F1) Recall() float64 {
+	return float64(f.tp) / float64(f.tp+f.fn)
 }
