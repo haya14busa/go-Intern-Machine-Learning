@@ -13,36 +13,37 @@ import (
 )
 
 const (
-	TargetLabel = "Iris-setosa"
-	Iteration   = 1
+	Iteration = 1
 )
 
 var (
-	training string
-	test     string
-	iter     int
+	training    string
+	test        string
+	iter        int
+	targetLabel string
 )
 
 func init() {
 	flag.StringVar(&training, "training", "", "training data set")
 	flag.StringVar(&test, "test", "", "test data set")
 	flag.IntVar(&iter, "i", -1, "iteration (max size)")
+	flag.StringVar(&targetLabel, "label", "Iris-setosa", "target label (Iris-setosa/Iris-versicolor/Iris/virginica)")
 }
 
 func main() {
 	flag.Parse()
-	if err := Main(os.Stdout, training, test, iter); err != nil {
+	if err := Main(os.Stdout, training, test, iter, targetLabel); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
-func Main(w io.Writer, training, test string, trainSize int) error {
+func Main(w io.Writer, training, test string, trainSize int, targetLabel string) error {
 	if training == "" || test == "" {
 		flag.Usage()
 		return nil
 	}
-	tr, te, err := RunClassification(training, test, &classification.Perceptron{}, trainSize)
+	tr, te, err := RunClassification(training, test, &classification.Perceptron{}, trainSize, targetLabel)
 	if err != nil {
 		return err
 	}
@@ -50,13 +51,13 @@ func Main(w io.Writer, training, test string, trainSize int) error {
 	return nil
 }
 
-func RunClassification(training, test string, c classification.Classifier, trainSize int) (trainAccuracy, testAccuracy float64, err error) {
-	trainAccuracy, err = train(training, c, Iteration, trainSize)
+func RunClassification(training, test string, c classification.Classifier, trainSize int, targetLabel string) (trainAccuracy, testAccuracy float64, err error) {
+	trainAccuracy, err = train(training, c, Iteration, trainSize, targetLabel)
 	if err != nil {
 		return
 	}
 	e := &evaluation.F1{}
-	testdata, err := cmd.LoadCSVDataSet(test, TargetLabel)
+	testdata, err := cmd.LoadCSVDataSet(test, targetLabel)
 	if err != nil {
 		return
 	}
@@ -65,8 +66,8 @@ func RunClassification(training, test string, c classification.Classifier, train
 	return trainAccuracy, testAccuracy, nil
 }
 
-func train(training string, c classification.Classifier, iteration int, trainSize int) (float64, error) {
-	dataset, err := cmd.LoadCSVDataSet(training, TargetLabel)
+func train(training string, c classification.Classifier, iteration int, trainSize int, targetLabel string) (float64, error) {
+	dataset, err := cmd.LoadCSVDataSet(training, targetLabel)
 	if err != nil {
 		return 0, err
 	}
