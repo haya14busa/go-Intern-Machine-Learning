@@ -35,13 +35,24 @@ func (f *F1) Add(predicted, supervised ml.Label) {
 func (f *F1) Accuracy() float64 {
 	p := f.Precision()
 	r := f.Recall()
+	if p+r == 0 {
+		return 0
+	}
 	return 2 * ((p * r) / (p + r))
 }
 
 func (f *F1) Precision() float64 {
-	return float64(f.tp) / float64(f.tp+f.fp)
+	denom := float64(f.tp + f.fp)
+	if denom == 0 {
+		return 0
+	}
+	return float64(f.tp) / denom
 }
 
 func (f *F1) Recall() float64 {
-	return float64(f.tp) / float64(f.tp+f.fn)
+	denom := float64(f.tp + f.fn)
+	if denom == 0 {
+		return 0
+	}
+	return float64(f.tp) / denom
 }
