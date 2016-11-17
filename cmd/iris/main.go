@@ -42,7 +42,7 @@ func Main(w io.Writer, training, test string, trainSize int) error {
 		flag.Usage()
 		return nil
 	}
-	tr, te, err := RunClassification(w, training, test, &classification.Perceptron{}, trainSize)
+	tr, te, err := RunClassification(training, test, &classification.Perceptron{}, trainSize)
 	if err != nil {
 		return err
 	}
@@ -50,8 +50,8 @@ func Main(w io.Writer, training, test string, trainSize int) error {
 	return nil
 }
 
-func RunClassification(w io.Writer, training, test string, c classification.Classifier, trainSize int) (trainAccuracy, testAccuracy float64, err error) {
-	trainAccuracy, err = train(w, training, c, Iteration, trainSize)
+func RunClassification(training, test string, c classification.Classifier, trainSize int) (trainAccuracy, testAccuracy float64, err error) {
+	trainAccuracy, err = train(training, c, Iteration, trainSize)
 	if err != nil {
 		return
 	}
@@ -65,7 +65,7 @@ func RunClassification(w io.Writer, training, test string, c classification.Clas
 	return trainAccuracy, testAccuracy, nil
 }
 
-func train(w io.Writer, training string, c classification.Classifier, iteration int, trainSize int) (float64, error) {
+func train(training string, c classification.Classifier, iteration int, trainSize int) (float64, error) {
 	dataset, err := cmd.LoadCSVDataSet(training, TargetLabel)
 	if err != nil {
 		return 0, err
