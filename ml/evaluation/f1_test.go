@@ -1,8 +1,10 @@
-package ml
+package evaluation
 
 import (
 	"math"
 	"testing"
+
+	"github.com/haya14busa/go-Intern-Machine-Learning/ml"
 )
 
 func almostEqual(a, b, tolerance float64) bool {
@@ -11,18 +13,18 @@ func almostEqual(a, b, tolerance float64) bool {
 
 func TestF1(t *testing.T) {
 	dataset := []struct {
-		Predicted  Label
-		Supervised Label
+		Predicted  ml.Label
+		Supervised ml.Label
 	}{
-		{Positive, Positive},
-		{Negative, Positive},
-		{Positive, Positive},
-		{Negative, Positive},
-		{Positive, Negative},
-		{Positive, Positive},
-		{Positive, Negative},
-		{Negative, Negative},
-		{Negative, Positive},
+		{ml.Positive, ml.Positive},
+		{ml.Negative, ml.Positive},
+		{ml.Positive, ml.Positive},
+		{ml.Negative, ml.Positive},
+		{ml.Positive, ml.Negative},
+		{ml.Positive, ml.Positive},
+		{ml.Positive, ml.Negative},
+		{ml.Negative, ml.Negative},
+		{ml.Negative, ml.Positive},
 	}
 
 	want := 0.545455

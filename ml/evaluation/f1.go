@@ -1,4 +1,6 @@
-package ml
+package evaluation
+
+import "github.com/haya14busa/go-Intern-Machine-Learning/ml"
 
 var _ Evaluator = &F1{}
 
@@ -8,7 +10,7 @@ type F1 struct {
 }
 
 // Add aggregates true/false and positive/negative label.
-func (f *F1) Add(predicted, supervised Label) {
+func (f *F1) Add(predicted, supervised ml.Label) {
 	// NOTE: aggregate true/false and positive/negative here.
 }
 
