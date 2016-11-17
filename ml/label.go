@@ -6,8 +6,8 @@ type Label struct {
 }
 
 var (
-	Positive = &Label{value: 1}
-	Negative = &Label{value: -1}
+	Positive = Label{value: 1}
+	Negative = Label{value: -1}
 )
 
 func (l *Label) IsPositive() bool {
