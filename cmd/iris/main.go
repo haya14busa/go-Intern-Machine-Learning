@@ -20,27 +20,29 @@ const (
 var (
 	training string
 	test     string
+	iter     int
 )
 
 func init() {
 	flag.StringVar(&training, "training", "", "training data set")
 	flag.StringVar(&test, "test", "", "test data set")
+	flag.IntVar(&iter, "i", -1, "iteration (max size)")
 }
 
 func main() {
 	flag.Parse()
-	if err := Main(os.Stdout, training, test); err != nil {
+	if err := Main(os.Stdout, training, test, iter); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 }
 
-func Main(w io.Writer, training, test string) error {
+func Main(w io.Writer, training, test string, trainSize int) error {
 	if training == "" || test == "" {
 		flag.Usage()
 		return nil
 	}
-	tr, te, err := RunClassification(w, training, test, &classification.Perceptron{})
+	tr, te, err := RunClassification(w, training, test, &classification.Perceptron{}, trainSize)
 	if err != nil {
 		return err
 	}
@@ -48,8 +50,8 @@ func Main(w io.Writer, training, test string) error {
 	return nil
 }
 
-func RunClassification(w io.Writer, training, test string, c classification.Classifier) (trainAccuracy, testAccuracy float64, err error) {
-	trainAccuracy, err = train(w, training, c, Iteration)
+func RunClassification(w io.Writer, training, test string, c classification.Classifier, trainSize int) (trainAccuracy, testAccuracy float64, err error) {
+	trainAccuracy, err = train(w, training, c, Iteration, trainSize)
 	if err != nil {
 		return
 	}
@@ -63,10 +65,13 @@ func RunClassification(w io.Writer, training, test string, c classification.Clas
 	return trainAccuracy, testAccuracy, nil
 }
 
-func train(w io.Writer, training string, c classification.Classifier, iteration int) (float64, error) {
+func train(w io.Writer, training string, c classification.Classifier, iteration int, trainSize int) (float64, error) {
 	dataset, err := cmd.LoadCSVDataSet(training, TargetLabel)
 	if err != nil {
 		return 0, err
+	}
+	if trainSize > 0 && len(dataset) > trainSize {
+		dataset = dataset[:trainSize]
 	}
 	for i := 0; i < iteration; i++ {
 		c.Train(dataset)
