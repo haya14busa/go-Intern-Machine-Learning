@@ -44,7 +44,7 @@ func Main(w io.Writer, training, test string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Fprintf(w, "training: %v, test: %v\n", tr, te)
+	fmt.Fprintln(w, tr, te)
 	return nil
 }
 
